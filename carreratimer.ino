@@ -26,6 +26,7 @@ unsigned long lapRecord1 = 0, lapRecord2 = 0;
 int i1, i2;  // counters
 boolean first1 = true, first2 =  true;
 int displayTime = 3;  // time (s) to display the lap time
+int notes[] = {1047,1319,1568};  // frequencies for tone()
 
 // string buffers for LCD
 // https://www.baldengineer.com/arduino-lcd-display-tips.html
@@ -65,16 +66,16 @@ void setup()
   PCICR |= 0b00000100; // enable pin change interrupts for D0 to D7. Alternative: PCICR  |= bit (PCIE2);
 
 	lcd.begin(16, 2);  // set up the number of columns and rows on the LCD
-	lcd.print("Zeitmessung und");
-	lcd.setCursor(0, 1);  // set the cursor to column 0, line 1
 	lcd.print("Rundenz");
 	lcd.print((char)0x84);  // 0x84 = ä, 0x8E = Ä, 0x94 = ö, 0x99 = Ö, 0x81 = ü, 0x9A = Ü
 	lcd.print("hler");
-
+  lcd.setCursor(0, 1);  // set the cursor to column 0, line 1
+  lcd.print("und Zeitmessung");
+  
 	// switch LED_BUILTIN off
 	pinMode(LED_BUILTIN, OUTPUT);
 	digitalWrite(LED_BUILTIN, LOW);
-
+  
 	delay(3000);  // show starting message for 3 s
 }
 
@@ -109,6 +110,15 @@ void loop()
 			lapRecord1 = lapTime1;
 		}
 		i1 = 0;  // reset display time counter
+    
+    if (lapNumber1 % 10 == 0)  // play sound every 10 laps
+    {    
+      for (int i = 0; i < 3; i++)
+      {
+        tone(6, notes[i], 200);
+        delay(150);
+      }
+    }
 	}
 
 	// if reed switch 2 is triggered
@@ -140,6 +150,15 @@ void loop()
 			lapRecord2 = lapTime2;
 		}
 		i2 = 0;  // reset display time counter
+
+    if (lapNumber2 % 10 == 0)  // play sound every 10 laps
+    {    
+      for (int i = 3; i > -1; i--)
+      {
+        tone(6, notes[i], 200);
+        delay(150);
+      }
+    }
 	}
 
 	// reset lap counter and best time
@@ -158,7 +177,7 @@ void loop()
 
 	// update LCD
 	updateDisplay();
-
+  
 	// wait for 1 s
   delay(1000);
 
