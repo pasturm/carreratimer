@@ -11,11 +11,9 @@
 #include <LiquidCrystal.h>
 
 // initialize the LCD
-LiquidCrystal lcd(12, 11, 10, 9, 8, 7);
+LiquidCrystal lcd(9, 8, 7, 6, 5, 4);
 
 // initialize variables
-const byte interruptPin1 = 2;  // interrupt pin for reed switch 1
-const byte interruptPin2 = 3;  // interrupt pin for reed switch 2
 unsigned long lastTriggerTime1, lastTriggerTime2;
 volatile unsigned long triggerTime1, triggerTime2;
 volatile boolean triggered1, triggered2;
@@ -51,32 +49,44 @@ void isr2()
 	triggered2 = true;
 }
 // pin change interrupt (as there are only 2 external interrupts on the Uno)
-ISR(PCINT2_vect)  // Port D, PCINT16 - PCINT23
+// http://gammon.com.au/interrupts
+// https://thewanderingengineer.com/2014/08/11/arduino-pin-change-interrupts/
+ISR(PCINT0_vect)  // Port B, PCINT0 - PCINT7
 {
-  if (reset) return;
-  reset = true;
+	if (reset) return;
+	reset = true;
 }
 
 void setup()
 {
-	attachInterrupt(digitalPinToInterrupt(interruptPin1), isr1, FALLING);
-	attachInterrupt(digitalPinToInterrupt(interruptPin2), isr2, FALLING);
-	PCMSK2 |= 0b00010000;    // mask to turn on pin D4, PCINT20. Alternative: PCMSK2 |= bit (PCINT20);
-	//PCIFR  |= bit (PCIF2);   // clear any outstanding interrupts
-  PCICR |= 0b00000100; // enable pin change interrupts for D0 to D7. Alternative: PCICR  |= bit (PCIE2);
+	pinMode(2, INPUT_PULLUP);  // interrupt pin for reed switch 1
+	pinMode(3, INPUT_PULLUP);  // interrupt pin for reed switch 2
+	attachInterrupt(digitalPinToInterrupt(2), isr1, FALLING);
+	attachInterrupt(digitalPinToInterrupt(3), isr2, FALLING);
+	pinMode(10, INPUT_PULLUP);  // pin for push putton
+	PCMSK0 |= 0b00000100;    // mask to turn on pin D10, PCINT3. Alternative: PCMSK0 |= bit (PCINT2);
+	PCIFR  |= bit (PCIF0);   // clear all interrupt flags
+	PCICR |= 0b00000001; // enable pin change interrupts for D8 to D13. Alternative: PCICR  |= bit (PCIE0);
+	pinMode(11, OUTPUT);  // pin for piezo buzzer
 
 	lcd.begin(16, 2);  // set up the number of columns and rows on the LCD
 	lcd.print("Rundenz");
 	lcd.print((char)0x84);  // 0x84 = ä, 0x8E = Ä, 0x94 = ö, 0x99 = Ö, 0x81 = ü, 0x9A = Ü
 	lcd.print("hler");
-  lcd.setCursor(0, 1);  // set the cursor to column 0, line 1
-  lcd.print("und Zeitmessung");
-  
+	lcd.setCursor(0, 1);  // set the cursor to column 0, line 1
+	lcd.print("und Zeitmessung");
+
 	// switch LED_BUILTIN off
 	pinMode(LED_BUILTIN, OUTPUT);
 	digitalWrite(LED_BUILTIN, LOW);
-  
+
 	delay(3000);  // show starting message for 3 s
+
+//  lcd.setCursor(0, 0);
+//  lcd.print(" 9    4.51    4s");
+//  lcd.setCursor(0, 1);
+//  lcd.print("11    4.28    4s");
+//  delay(300000);
 }
 
 void loop()
@@ -110,15 +120,15 @@ void loop()
 			lapRecord1 = lapTime1;
 		}
 		i1 = 0;  // reset display time counter
-    
-    if (lapNumber1 % 10 == 0)  // play sound every 10 laps
-    {    
-      for (int i = 0; i < 3; i++)
-      {
-        tone(6, notes[i], 200);
-        delay(150);
-      }
-    }
+
+		if (lapNumber1 % 10 == 0)  // play sound every 10 laps
+		{
+			for (int i = 3; i > -1; i--)
+			{
+				tone(11, notes[i], 200);
+				delay(150);
+			}
+		}
 	}
 
 	// if reed switch 2 is triggered
@@ -151,14 +161,14 @@ void loop()
 		}
 		i2 = 0;  // reset display time counter
 
-    if (lapNumber2 % 10 == 0)  // play sound every 10 laps
-    {    
-      for (int i = 3; i > -1; i--)
-      {
-        tone(6, notes[i], 200);
-        delay(150);
-      }
-    }
+		if (lapNumber2 % 10 == 0)  // play sound every 10 laps
+		{
+			for (int i = 0; i < 3; i++)
+			{
+				tone(11, notes[i], 200);
+				delay(150);
+			}
+		}
 	}
 
 	// reset lap counter and best time
@@ -177,9 +187,9 @@ void loop()
 
 	// update LCD
 	updateDisplay();
-  
+
 	// wait for 1 s
-  delay(1000);
+	delay(1000);
 
 }  // end of loop
 
