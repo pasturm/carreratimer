@@ -17,11 +17,20 @@ Works like a charm!
 Arduino sketch: [carreratimer.ino](./carreratimer.ino)
 
 ## Components
+From Arduino Starter Kit:
+
 * Arduino Uno
-* 16x2 LCD, jumper wires, 220 Ohm resistors, potentiometer, pushbutton (from Arduino Starter Kit)
-* Reed switches (Littlefuse MITI-3V1-6-12.5 7mm Ultra-Miniature Reed Switch), 
+* 16x2 LCD
+* jumper wires
+* 220 Ohm resistors
+* potentiometer
+* pushbutton
+* piezo buzzer
+
+Reed swiches:
+
+* Littlefuse MITI-3V1-6-12.5 7mm Ultra-Miniature Reed Switch, 
 mounted with tape on the bottom side of the tracks
-* External USB battery
 
 <img src="pictures/breadboard.png" width="75%" />
 

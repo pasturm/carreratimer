@@ -4,3 +4,4 @@
 .Ruserdata
 *.Rproj
 config.stino-settings
+.DS_Store

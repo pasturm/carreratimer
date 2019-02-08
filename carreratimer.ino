@@ -81,12 +81,6 @@ void setup()
 	digitalWrite(LED_BUILTIN, LOW);
 
 	delay(3000);  // show starting message for 3 s
-
-//  lcd.setCursor(0, 0);
-//  lcd.print(" 9    4.51    4s");
-//  lcd.setCursor(0, 1);
-//  lcd.print("11    4.28    4s");
-//  delay(300000);
 }
 
 void loop()
