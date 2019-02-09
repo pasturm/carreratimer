@@ -22,7 +22,7 @@ From Arduino Starter Kit:
 * Arduino Uno
 * 16x2 LCD
 * jumper wires
-* 220 Ohm resistors
+* 220 Ohm resistor
 * potentiometer
 * pushbutton
 * piezo buzzer
