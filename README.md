@@ -3,7 +3,7 @@
 The goal of this project was to build a timer and lap counter for my kid's 
 Carrera slot car racing track (Carrera Go!!!, 1:43).
 
-I am using an Arduino Uno and two reed switches as sensors. The reed switches
+I am using an Arduino Uno and two [reed switches](https://en.wikipedia.org/wiki/Reed_switch) as sensors. The reed switches
 are mounted below the tracks and detect the magnet of the cars when the cars pass by.
 
 The lap count, lap record and current lap time of the two cars are displayed 
